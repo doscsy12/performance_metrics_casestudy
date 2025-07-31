@@ -1,4 +1,5 @@
 import os
+import base64
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,7 +25,7 @@ def normalize_metric(score, best, worst, higher_is_better=False):
         norm = (score - worst) / (best - worst)
     else:
         norm = (score - best) / (worst - best)
-    return min(max(norm, 0), 1)  # clip to [0, 1]
+    return min(max(norm, 0), 1)
 
 def generate_summary(scores, norm_scores):
     summary_lines = []
@@ -33,32 +34,22 @@ def generate_summary(scores, norm_scores):
         status = 'Good' if norm_value <= 0.5 else 'Needs Work'
         line = f"{metric:30}: {actual_value:.3f} — {status}"
         summary_lines.append(line)
-    # need line breaks
     return "<br>\n".join(summary_lines)
 
 def plot_score_ranges(norm_scores, norm_best_case, norm_worst_case, output_path):
-    """
-    Plots normalized score ranges (worst=1 to best=0) with actual normalized score markers.
-    Actual values will be weird if all in same fig. 
-    Saves the output to `output_path`.
-    """
     metrics = list(norm_scores.keys())
     y_pos = np.arange(len(metrics))
-
     actual = [norm_scores[m] for m in metrics]
-    best = [norm_best_case.get(m, 0) for m in metrics]   # should be zeros
-    worst = [norm_worst_case.get(m, 1) for m in metrics] # should be ones
+    best = [norm_best_case.get(m, 0) for m in metrics]
+    worst = [norm_worst_case.get(m, 1) for m in metrics]
 
     fig, ax = plt.subplots(figsize=(9, 5))
 
     for i, (b, w, a) in enumerate(zip(best, worst, actual)):
         left = min(w, b)
         right = max(w, b)
-
-        # Horizontal line from worst (1) to best (0)
         ax.hlines(y=i, xmin=left, xmax=right, color='lightgray', linewidth=8)
-        # Actual normalized score marker
-        ax.plot(a, i, 'ro')  # red dot
+        ax.plot(a, i, 'ro')
         ax.text(a, i + 0.2, f'{a:.3f}', ha='center', va='bottom', fontsize=9)
 
     ax.set_yticks(y_pos)
@@ -71,27 +62,29 @@ def plot_score_ranges(norm_scores, norm_best_case, norm_worst_case, output_path)
     plt.savefig(output_path)
     plt.close()
 
+def img_to_base64(img_path):
+    with open(img_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode("utf-8")
 
 def generate_report(scores: dict, worst_case: dict, best_case: dict,
                     barplot_path: str = 'outputs/summary_scores_barplot.png',
                     radarplot_path: str = 'outputs/summary_scores_radarplot.png',
                     html_report_path: str = 'outputs/report.html'):
     """
-    Generate a summary report with results, barplot, radar plot.
+    Generate a summary report with results, plots, and embedded base64 images.
     """
     os.makedirs(os.path.dirname(barplot_path), exist_ok=True)
     os.makedirs(os.path.dirname(radarplot_path), exist_ok=True)
     os.makedirs(os.path.dirname(html_report_path), exist_ok=True)
-    
-    # print definition of scores used
+
     definitions_html = generate_definitions_html(score_descriptions)
-    
+
     df_scores = pd.DataFrame.from_dict(scores, orient='index', columns=['Score'])
     df_scores.index.name = 'Metric'
     print("\nEvaluation Report (Mean Values):")
     print(df_scores)
-    
-    # plot scores
+
+    # Barplot
     plt.figure(figsize=(8, 4))
     sns.barplot(x='Score', y=df_scores.index, data=df_scores, palette='viridis')
     plt.title('Synthetic vs Real Data — Evaluation Metrics (Mean Values)')
@@ -103,8 +96,7 @@ def generate_report(scores: dict, worst_case: dict, best_case: dict,
     df_worst = pd.DataFrame.from_dict(worst_case, orient='index', columns=['Worst Case'])
     print("\nWorst Case Scores (for random noisy synthetic data):")
     print(df_worst)
-    
-    # Normalize for radar and rangebox plot
+
     norm_scores = {
         'C-FID': normalize_metric(scores['C-FID'], best=0, worst=worst_case['C-FID']),
         'Skewness Difference (SD)': normalize_metric(scores['Skewness Difference (SD)'], best=0, worst=worst_case['Skewness Difference (SD)']),
@@ -114,16 +106,12 @@ def generate_report(scores: dict, worst_case: dict, best_case: dict,
     }
 
     labels = list(norm_scores.keys())
-    values = list(norm_scores.values())
-    values += values[:1]  # close radar
-
-    angles = [n / float(len(labels)) * 2 * np.pi for n in range(len(labels))]
-    angles += angles[:1]
+    values = list(norm_scores.values()) + [list(norm_scores.values())[0]]
+    angles = [n / float(len(labels)) * 2 * np.pi for n in range(len(labels))] + [0]
 
     plt.figure(figsize=(6, 6))
     ax = plt.subplot(111, polar=True)
     plt.xticks(angles[:-1], labels)
-
     ax.plot(angles, values, linewidth=2, linestyle='solid')
     ax.fill(angles, values, 'skyblue', alpha=0.4)
     plt.title("Normalized Metrics (0 = Best, 1 = Worst)", y=1.1)
@@ -131,16 +119,19 @@ def generate_report(scores: dict, worst_case: dict, best_case: dict,
     plt.savefig(radarplot_path)
     plt.close()
 
-    # range plot using norm_scores
+    # Score range plot
     norm_best_case = {metric: 0 for metric in norm_scores.keys()}
     norm_worst_case = {metric: 1 for metric in norm_scores.keys()}
     rangeplot_path = os.path.join(os.path.dirname(barplot_path), 'score_ranges_plot.png')
     plot_score_ranges(norm_scores, norm_best_case, norm_worst_case, rangeplot_path)
-    
-    # Generate in HTML
+
+    # Convert all images to base64
+    barplot_base64 = img_to_base64(barplot_path)
+    radarplot_base64 = img_to_base64(radarplot_path)
+    rangeplot_base64 = img_to_base64(rangeplot_path)
+
     summary_html = generate_summary(scores, norm_scores)
 
-    # HTML report
     html_content = f"""
     <html>
     <head>
@@ -166,19 +157,17 @@ def generate_report(scores: dict, worst_case: dict, best_case: dict,
         <div class="summary">{summary_html}</div>
 
         <h2>Barplot of Scores</h2>
-        <img src="{os.path.basename(barplot_path)}" alt="Scores Barplot">
-        
+        <img src="data:image/png;base64,{barplot_base64}" alt="Scores Barplot">
+
         <h2>Normalised Score Range</h2>
-        <img src="{os.path.basename(rangeplot_path)}" alt="Score Ranges Plot">
+        <img src="data:image/png;base64,{rangeplot_base64}" alt="Score Ranges Plot">
 
         <h2>Radar Plot of Normalized Scores</h2>
-        <img src="{os.path.basename(radarplot_path)}" alt="Radar Plot">
-
+        <img src="data:image/png;base64,{radarplot_base64}" alt="Radar Plot">
     </body>
     </html>
     """
 
-    # Save HTML report
     with open(html_report_path, 'w', encoding='utf-8') as f:
         f.write(html_content)
 
