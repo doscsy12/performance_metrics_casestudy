@@ -29,12 +29,11 @@ Run `main.py`
 |encoder.py  | Encodes data|
 |analysis.py| metrics: CFID, skew, kurtosis, CFID, DTW, NNDR |
 |report_generator.py | HTML report generation, saved in outputs |
-|requirements.txt| List of required libraries |
-|-- | -- |
+|requirements.txt| required libraries |
 
 | folder                     | description                    |
 |-------------------------------|--------------------------------|
 |data| nothing here |
 |scripts| general scripts written in `.ipynb` |
 |outputs | results saved here |
-|-- | -- |
+|templates | was hopeful, but did not get that far |
