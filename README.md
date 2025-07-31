@@ -30,11 +30,11 @@ Run `main.py`
 |analysis.py| metrics: CFID, skew, kurtosis, CFID, DTW, NNDR |
 |report_generator.py | HTML report generation, saved in outputs |
 |requirements.txt| List of required libraries |
-|[--]()  | -- |
+|-- | -- |
 
 | folder                     | description                    |
 |-------------------------------|--------------------------------|
 |data| nothing here |
 |scripts| general scripts written in `.ipynb` |
 |outputs | results saved here |
-|[--]()  | -- |
+|-- | -- |
