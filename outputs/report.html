@@ -1,0 +1,46 @@
+
+    <html>
+    <head>
+        <title>Synthetic Data Evaluation Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #333; }
+            img { max-width: 600px; height: auto; display: block; margin-bottom: 20px; }
+            .summary { white-space: pre-line; font-family: monospace; background-color: #f9f9f9; padding: 10px; border-radius: 5px; }
+            .definitions { margin-bottom: 20px; font-size: 14px; }
+            ul { padding-left: 20px; }
+        </style>
+    </head>
+    <body>
+        <h1>Synthetic Data Evaluation Report</h1>
+
+        <h2>Metric Definitions</h2>
+        <div class="definitions">
+            <ul>
+<li><b>C-FID</b>: Conditional Frechet Inception Distance - measures similarity of distributions.</li>
+<li><b>Skewness Difference (SD)</b>: Measure of asymmetry between real and synthetic data.</li>
+<li><b>Kurtosis Difference (KD)</b>: Measure of tail heaviness/ outliers between real and synthetic data.</li>
+<li><b>DTW</b>: Dynamic Time Warping distance - compares data sequences in time series data.</li>
+<li><b>NNDR (5th pct)</b>: Nearest Neighbor Distance Ratio (5th percentile) - highlight privacy risks if synthetic points too similar to real points.</li>
+</ul>
+        </div>
+
+        <h2>Score Summary</h2>
+        <div class="summary">C-FID                         : 0.451 — Good<br>
+Skewness Difference (SD)      : 0.307 — Good<br>
+Kurtosis Difference (KD)      : 0.226 — Good<br>
+DTW                           : 8.766 — Needs Work<br>
+NNDR (5th pct)                : 0.975 — Needs Work</div>
+
+        <h2>Barplot of Scores</h2>
+        <img src="summary_scores_barplot.png" alt="Scores Barplot">
+        
+        <h2>Normalised Score Range</h2>
+        <img src="score_ranges_plot.png" alt="Score Ranges Plot">
+
+        <h2>Radar Plot of Normalized Scores</h2>
+        <img src="summary_scores_radarplot.png" alt="Radar Plot">
+
+    </body>
+    </html>
+    

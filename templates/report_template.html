@@ -1,0 +1,15 @@
+<!-- templates/report_template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Metrics Report</title>
+</head>
+<body>
+    <h1>Metrics Summary</h1>
+    <ul>
+    {% for key, value in results.items() %}
+        <li><strong>{{ key }}:</strong> {{ value }}</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
