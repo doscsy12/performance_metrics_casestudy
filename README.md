@@ -5,7 +5,7 @@ Suggest evaluation metrics for assessing multivariate synthetic time-series data
 
 ### metrics_pipeline
 ├── `main.py`
-├── `config.py`
+<br>├── `config.py`
 <br>├── `data_loader.py`
 <br>├── `encoder.py`
 <br>├── `analysis.py`
