@@ -4,20 +4,35 @@
 Suggest evaluation metrics for assessing multivariate synthetic time-series data.
 
 ### metrics_pipeline
-<br>├── `main.py`                    # Runs everything
-<br>├── `config.py`                  # Configurations paths, folders
-<br>├── `data_loader.py`             # Load data
-<br>├── `analysis.py`                # metrics: CFID, skew, kurtosis, CFID, DTW, NNDR
-<br>├── `report_generator.py`        # HTML report generation
+<br>├── `main.py`                   
+<br>├── `config.py`                 
+<br>├── `data_loader.py`             
+<br>├── `analysis.py`                
+<br>├── `report_generator.py`        
 <br>├── `templates/`
-<br>│   └── `report_template.html`   # template
+<br>│   └── `report_template.html`   
 <br>├── `outputs/`
-<br>│   └── `report.html `           # Output report file       
-<br>├── `requirements.txt`           # List of required libraries
-<br>├── `data/`						 # Not loaded here 
-<br>├── `scripts/`					 # general scripts written in `.ipynb`
+<br>│   └── `report.html `                
+<br>├── `requirements.txt`          
+<br>├── `data/`						 
+<br>├── `scripts/`					 
 
 ### Run script 
 Run `main.py`
 
+| script                      | description                    |
+|-------------------------------|--------------------------------|
+|main.py | Runs everything |
+|config.py | Configurations paths, folders |
+|data_loader.py  | Load data |
+|analysis.py| metrics: CFID, skew, kurtosis, CFID, DTW, NNDR |
+|report_generator.py | HTML report generation, saved in outputs |
+|requirements.txt| List of required libraries |
+|[--]()  | -- |
 
+| folder                     | description                    |
+|-------------------------------|--------------------------------|
+|data| nothing here |
+|scripts| general scripts written in `.ipynb` |
+|outputs | results saved here |
+|[--]()  | -- |
