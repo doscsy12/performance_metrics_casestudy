@@ -49,19 +49,10 @@ def main():
     # worst/best case scenario
     # used to normalise scores
     worst_cfid_score, example_file = calculate_cfid_worst_case(config.data_dir)
-    print(f"Worst-case C-FID (real vs random noise in {example_file}): {worst_cfid_score:.4f}")
-
     worst_skew_diff, idx = calculate_skewness_worst_case(config.data_dir)
-    print(f"Skewness Difference between real series_{idx:03d}.csv and column-wise noise: {worst_skew_diff:.4f}")
-
     worst_kurt_diff, idx_kurt = calculate_kurtosis_worst_case(config.data_dir)
-    print(f"Kurtosis Difference between real series_{idx_kurt:03d}.csv and column-wise noise: {worst_kurt_diff:.6f}")
-
     worst_dtw_distance, idx_dtw = calculate_dtw_worst_case(config.data_dir)
-    print(f"DTW distance between real series_{idx_dtw:03d}.csv and noise: {worst_dtw_distance:.6f}")
-
     best_nndr_5p, idx_nndr = calculate_nndr_best_case(config.data_dir)
-    print(f"NNDR (5th percentile) between real series_{idx_nndr:03d}.csv and noise: {best_nndr_5p:.6f}")
 
     worst_case = {
     'C-FID': worst_cfid_score,
