@@ -1,11 +1,6 @@
 import os
 import pandas as pd
 
-# data_dir = 'C:\\Users\\USER\\Documents\\betterdata_task\\data\\TimeSeries\\conditional_generation\\'
-# real_dir = os.path.join(data_dir, real_filetype, filefolder)
-# synth_dir = os.path.join(data_dir, synth_type, synth_folder)
-# static_dir = os.path.join(data_dir, real_filetype)
-
 def read_static_data(data_dir, filename="static.csv"):
     filepath = os.path.join(data_dir, "original", filename)
     return pd.read_csv(filepath)
